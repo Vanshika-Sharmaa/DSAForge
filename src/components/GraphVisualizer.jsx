@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import GraphVisualizer from '../components/GraphVisualizer'
+
 
 export default function GraphPage() {
 
