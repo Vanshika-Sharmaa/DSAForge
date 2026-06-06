@@ -9,8 +9,8 @@ import PlaygroundPage  from './pages/PlaygroundPage'
 import AIPage          from './pages/AIPage'
 import HistoryPage     from './pages/HistoryPage'
 import PracticePage    from './pages/PracticePage'
-import GameModePage    from './pages/Gamemodepage'
-import MemoryPage      from './pages/Memorypage'
+import GameModePage    from './pages/GameModePage'
+import MemoryPage      from './pages/MemoryPage'
 import { useSort }     from './hooks/useSort'
 
 const TITLES = {
