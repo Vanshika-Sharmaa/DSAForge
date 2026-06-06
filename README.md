@@ -1,79 +1,139 @@
-# DSA Algorithm Analyzer — AI Powered
+<div align="center">
 
-A full-stack interactive DSA visualizer and AI-powered code analyzer built with React + Express + Claude API.
+# ⚡ DSAForge
 
-## Features
+### AI-Powered Data Structures & Algorithms Learning Platform
 
-- **Sorting Visualizer** — Bubble, Selection, Insertion, Merge, QuickSort with live animations
-- **Search Visualizer** — Binary & Linear search step-by-step  
-- **Graph Traversal** — BFS & DFS visualization on interactive graphs
-- **Big-O Complexity Chart** — Interactive reference chart for all major algorithms
-- **Code Playground** — Run DSA code in-browser with 6 templates
-- **AI Analyzer** — Claude-powered complexity analysis, dry runs, and optimization tips
-- **History** — Track all analyses and visualizations
+*Visualize · Practice · Play · Master*
 
-## Setup
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_v4-0F172A?style=for-the-badge&logo=tailwindcss&logoColor=38BDF8)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq_AI-F55036?style=for-the-badge)
 
-### 1. Install dependencies
+</div>
+
+---
+
+## 📌 About
+
+**DSAForge** is an all-in-one, AI-powered platform that transforms how you learn DSA. Instead of reading theory alone, you can **see** algorithms animate, **practice** real problems with smart hints, **analyze** your own code with AI, and **play** your way through concepts in game mode — all from a single app.
+
+---
+
+## ✨ Features
+
+### 🛠️ Visualizer Tools
+- **Sorting Visualizer** — Animate Bubble, Selection, Insertion, Merge & Quick Sort in real-time with speed control
+- **Search Visualizer** — Step-by-step Linear & Binary Search animation
+- **Graph Traversal** — Interactive BFS & DFS on custom-built graphs
+- **Big-O Complexity** — Side-by-side complexity comparison chart for all major algorithms
+
+### 🤖 AI-Powered
+- **AI Code Analyzer** — Paste any code and get instant time/space complexity breakdown powered by Groq (LLaMA 3)
+- **Smart Hint System** — Progressive hints that guide without spoiling
+- **Post-Solve Analysis** — Detailed feedback after every problem attempt
+
+### 🎮 Gaming & Practice
+- **Practice Mode** — 100+ curated DSA problems with timer, hints, voice support & spaced repetition
+- **Vice City Mode** — GTA-style fullscreen game where you complete missions & beat bosses by answering DSA questions
+- **Memory Arcade** — Flashcard-style memory trainer to lock in DSA concepts
+
+### 🔧 Smart Utilities
+- **Code Playground** — Write, run and analyze code directly in the browser
+- **Voice Toggle** — Hands-free mode using Web Speech API
+- **History Tracker** — Full log of your solved problems and sessions
+- **Smart Timer Widget** — Per-problem time tracking with optimal time benchmarks
+- **Mistake Tracker** — Logs weak areas for focused revision
+
+---
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite 8, Tailwind CSS v4 |
+| Backend | Node.js, Express.js |
+| AI Provider | Groq SDK — LLaMA 3 |
+| Fonts | JetBrains Mono, Syne |
+| Build Tool | Vite with HMR |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js v18+
+- A free [Groq API Key](https://console.groq.com)
+
+### Installation
+
 ```bash
+# 1. Clone the repository
+git clone https://github.com/YOUR_USERNAME/DSAForge.git
+cd DSAForge
+
+# 2. Install dependencies
 npm install
-```
 
-### 2. Set your Anthropic API key
-```bash
-export ANTHROPIC_API_KEY=sk-ant-your-key-here
-# Or create a .env file (copy .env.example)
-```
+# 3. Setup environment variables
+cp .env.example .env
+# Add your GROQ_API_KEY in the .env file
 
-### 3. Run backend (Terminal 1)
-```bash
+# 4. Start the backend server
 npm run server
-```
 
-### 4. Run frontend (Terminal 2)
-```bash
+# 5. Start the frontend (new terminal)
 npm run dev
 ```
 
-### Or run both together
-```bash
-npm start
+Open **http://localhost:5173** in your browser 🚀
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-Open http://localhost:5173
+> ⚠️ Never push your `.env` file. It is already listed in `.gitignore`.
 
-## Architecture
+Get your free API key at → [console.groq.com](https://console.groq.com)
+
+---
+
+## 📁 Project Structure
 
 ```
-DSA_ALGO_ANALYZER/
-├── server.js              # Express backend + Claude API
-├── routes/analyze.js      # Static analysis fallback
+DSAForge/
 ├── src/
-│   ├── api.js             # Frontend API client (native fetch)
-│   ├── App.jsx            # Root with routing + state
-│   ├── components/
-│   │   ├── AIAnalyzer.jsx     # AI chat interface
-│   │   ├── SortVisualizer.jsx # Sorting bars
-│   │   ├── SearchVisualizer.jsx
+│   ├── components/        # Reusable UI components
+│   │   ├── AIAnalyzer.jsx
+│   │   ├── SortVisualizer.jsx
 │   │   ├── GraphVisualizer.jsx
-│   │   ├── ComplexityChart.jsx
 │   │   ├── CodePlayground.jsx
-│   │   └── Sidebar.jsx
-│   ├── pages/             # Page wrappers
-│   ├── hooks/
-│   │   ├── useSort.js     # Sorting animation state
-│   │   └── useSearch.js
-│   └── utils/
-│       ├── analyzer.js    # Local pattern detection
-│       ├── algoData.js    # Algorithm metadata
-│       └── history.js     # localStorage history
-└── vite.config.js         # Dev proxy → backend
+│   │   ├── SmartHintSystem.jsx
+│   │   └── ...
+│   ├── pages/             # Full page views
+│   │   ├── Gamemodepage.jsx
+│   │   ├── Memorypage.jsx
+│   │   ├── Practicepage.jsx
+│   │   └── ...
+│   ├── hooks/             # Custom React hooks
+│   ├── utils/             # Helper functions (AI, voice, timer, memory)
+│   └── data/              # Question bank & algorithm data
+├── routes/                # Express API routes
+├── server.js              # Express backend
+├── .env.example           # Environment variable template
+└── vite.config.js
 ```
 
-## API Endpoints
+---
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | Health check |
-| POST | `/api/analyze` | AI-powered analysis via Claude |
-| POST | `/api/static-analyze` | Fast pattern detection (no AI) |
+## 📄 License
+
+MIT © 2026 — Made with ❤️ by **Vanshika Sharma**

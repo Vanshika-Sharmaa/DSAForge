@@ -83,7 +83,7 @@ export default function GraphPage() {
 
   return (
     <>
-      <style>{\`
+      <style>{`
         .gp-page { display:flex; flex-direction:column; gap:12px; overflow-y:auto; height:100%; }
         .gp-svg-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; flex-shrink:0; }
         .gp-svg-wrap { height:340px; flex-shrink:0; }
@@ -98,7 +98,7 @@ export default function GraphPage() {
           .gp-info { width:260px; flex-shrink:0; display:flex; flex-direction:column; overflow-y:auto; }
           .gp-info-full { grid-column:unset; }
         }
-      \`}</style>
+      `}</style>
 
       <div className="gp-page">
         <div className="gp-svg-card">
@@ -147,7 +147,7 @@ export default function GraphPage() {
         <div className="gp-info">
           <InfoBox title={activeAlgo === 'dfs' ? 'DFS Stack' : 'BFS Queue'} color="#f59e0b">
             <div style={{ fontFamily:'JetBrains Mono', fontSize:12, color:'#f59e0b' }}>
-              {queueList.length > 0 ? \`[ \${queueList.join(' → ')} ]\` : 'Empty'}
+              {queueList.length > 0 ? `[ ${queueList.join(' → ')} ]` : 'Empty'}
             </div>
           </InfoBox>
           <InfoBox title="Visit Order" color="#22d3a0">
@@ -184,7 +184,7 @@ function Btn({ children, onClick, disabled, primary, green }) {
     <button onClick={onClick} disabled={disabled} style={{
       background: primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.15)' : 'var(--surface)',
       color: primary ? '#fff' : green ? '#22d3a0' : 'var(--text2)',
-      border: \`1px solid \${primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.3)' : 'var(--border)'}\`,
+      border: `1px solid ${primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.3)' : 'var(--border)'}`,
       borderRadius:7, padding:'7px 14px', fontSize:12, fontWeight:700,
       cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
       fontFamily:'JetBrains Mono',
