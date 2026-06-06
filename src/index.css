@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --bg:       #070810;
+  --bg2:      #0c0e1a;
+  --surface:  #131525;
+  --surface2: #1c1f30;
+  --accent:   #6c63ff;
+  --green:    #22d3a0;
+  --amber:    #f59e0b;
+  --red:      #f43f5e;
+  --blue:     #38bdf8;
+  --text:     #e8eaf6;
+  --text2:    #8890b0;
+  --text3:    #4a5070;
+  --border:   #1a1e30;
+  --border2:  #272d46;
+  --sidebar-w: 220px;
+}
+
+html { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  margin: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  /* prevent horizontal scroll at root */
+  overflow-x: hidden;
+}
+
+#root { height: 100%; }
+
+/* Scrollbars */
+::-webkit-scrollbar          { width: 4px; height: 4px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3d4465; }
+
+/* Animations */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse-glow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(108,99,255,0); }
+  50%     { box-shadow: 0 0 14px 3px rgba(108,99,255,0.35); }
+}
+
+/* Buttons */
+button { transition: all 0.15s ease; font-family: inherit; }
+button:hover:not(:disabled)  { filter: brightness(1.12); }
+button:active:not(:disabled) { transform: scale(0.97); }
+
+/* Inputs */
+input, textarea, select {
+  transition: border-color 0.2s ease;
+  color-scheme: dark;
+  font-family: inherit;
+}
+
+/* Text selection */
+::selection { background: rgba(108,99,255,0.3); }
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid rgba(108,99,255,0.55);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ──────────── NOWRAP BADGES — NEVER BREAK ──────────── */
+.nowrap-badge,
+.placement-badge {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ──────────── GLOBAL MOBILE PREVENTION ──────────── */
+/* Stop anything from breaking out horizontally */
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ──────────── MOBILE RESPONSIVE ──────────── */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+
+  body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* App shell */
+  .app-shell {
+    overflow-x: hidden;
+  }
+
+  .app-content {
+    overflow-x: hidden !important;
+    padding: 8px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent children from overflowing */
+  .app-content > * {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Touch-friendly buttons */
+  button {
+    min-height: 36px;
+    touch-action: manipulation;
+  }
+
+  /* Prevent iOS input zoom (needs 16px+ font-size) */
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 0.875rem) !important;
+  }
+
+  /* Tables always scroll horizontally */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* Smooth momentum scrolling on all scrollable areas */
+  [style*="overflow"] {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ──────────── NARROW PHONE (max 480px) ──────────── */
+@media (max-width: 480px) {
+  .app-content {
+    padding: 6px !important;
+  }
+
+  /* Scale down card panels slightly */
+  .panel-card {
+    padding: 10px !important;
+  }
+
+  /* Canvas: use pixelated for performance */
+  canvas {
+    image-rendering: auto;
+    will-change: transform;
+  }
+}
