@@ -10,9 +10,9 @@ export default function SearchVisualizer() {
   useEffect(() => { sh.generate(type === 'binary') }, [type])
 
   const cellColor = (i) => {
-    if (sh.found === i) return { bg: '#22d3a0', color: '#000', border: '#22d3a0' }
+    if (sh.found === i)        return { bg: '#22d3a0', color: '#000', border: '#22d3a0' }
     if (sh.active.includes(i)) return { bg: '#f59e0b', color: '#000', border: '#f59e0b' }
-    if (sh.visited.includes(i)) return { bg: 'rgba(108,99,255,0.2)', color: '#a78bfa', border: '#6c63ff' }
+    if (sh.visited.includes(i))return { bg: 'rgba(108,99,255,0.2)', color: '#a78bfa', border: '#6c63ff' }
     return { bg: 'var(--surface)', color: 'var(--text2)', border: 'var(--border)' }
   }
 
@@ -24,98 +24,239 @@ export default function SearchVisualizer() {
   }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr)', gap: 14, height: '100%' }} className="search-grid">
-      <style>{`@media(min-width:768px){ .search-grid { grid-template-columns: minmax(0,1fr) 280px !important; } }`}</style>
-      <div style={panel}>
-        <PanelHead title="Search Visualizer">
-          <div style={{ display: 'flex', gap: 6 }}>
-            {['linear', 'binary'].map(t => (
-              <button key={t} onClick={() => setType(t)} style={{
-                padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                background: type === t ? 'var(--accent)' : 'var(--surface)',
-                border: `1px solid ${type === t ? 'var(--accent)' : 'var(--border)'}`,
-                color: type === t ? '#fff' : 'var(--text2)', fontFamily: 'JetBrains Mono'
-              }}>{t === 'linear' ? 'Linear' : 'Binary'}</button>
-            ))}
-          </div>
-        </PanelHead>
+    <>
+      <style>{`
+        .sv-root {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+        .sv-main {
+          background: var(--bg2);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        .sv-body {
+          padding: 16px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .sv-cells {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-bottom: 24px;
+          padding-bottom: 6px;
+        }
+        .sv-cell {
+          width: clamp(34px, 10vw, 48px);
+          height: clamp(34px, 10vw, 48px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          border: 2px solid;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 13px;
+          font-weight: 700;
+          transition: all 0.2s;
+          position: relative;
+          flex-shrink: 0;
+        }
+        .sv-cell-idx {
+          position: absolute;
+          bottom: -16px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 8px;
+          color: var(--text3);
+          font-family: 'JetBrains Mono', monospace;
+        }
+        .sv-stats {
+          display: flex;
+          gap: 8px;
+          margin-top: 8px;
+          margin-bottom: 16px;
+        }
+        .sv-stat {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: 8px 10px;
+          flex: 1;
+          min-width: 0;
+        }
+        .sv-stat-label {
+          font-size: 9px;
+          color: var(--text2);
+          letter-spacing: 0.1em;
+          margin-bottom: 3px;
+          font-family: 'JetBrains Mono', monospace;
+        }
+        .sv-stat-val {
+          font-size: 16px;
+          font-weight: 800;
+          font-family: 'JetBrains Mono', monospace;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .sv-log {
+          background: var(--bg);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          padding: 12px;
+          max-height: 160px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .sv-controls {
+          display: flex;
+          gap: 8px;
+          padding: 12px 16px;
+          border-top: 1px solid var(--border);
+          flex-wrap: wrap;
+          align-items: center;
+          flex-shrink: 0;
+          background: var(--bg2);
+        }
+        .sv-target-input {
+          background: var(--bg);
+          border: 1px solid var(--border2);
+          border-radius: 6px;
+          padding: 8px 10px;
+          color: var(--text);
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 12px;
+          width: 130px;
+          height: 36px;
+          outline: none;
+          box-sizing: border-box;
+        }
+        .sv-info {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
 
-        <div style={{ padding: 16, flex: 1, overflow: 'auto' }}>
-          {/* Cells */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
-            {sh.arr.map((v, i) => {
-              const c = cellColor(i)
-              return (
-                <div key={i} style={{
-                  width: 'clamp(32px,8vw,48px)', height: 'clamp(32px,8vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: c.bg, border: `2px solid ${c.border}`, borderRadius: 8,
-                  fontFamily: 'JetBrains Mono', fontSize: 13, fontWeight: 700, color: c.color,
-                  transition: 'all 0.2s', position: 'relative'
-                }}>
-                  {v}
-                  <span style={{ position: 'absolute', bottom: -18, fontSize: 9, color: 'var(--text3)' }}>{i}</span>
+        @media (min-width: 768px) {
+          .sv-root {
+            flex-direction: row;
+          }
+          .sv-main {
+            flex: 1;
+            min-width: 0;
+          }
+          .sv-body {
+            overflow-y: auto;
+          }
+          .sv-info {
+            width: 280px;
+            flex-shrink: 0;
+          }
+        }
+      `}</style>
+
+      <div className="sv-root">
+        {/* ── Main panel ── */}
+        <div className="sv-main">
+          {/* Header */}
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text2)', letterSpacing: '0.06em' }}>SEARCH VISUALIZER</span>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {['linear', 'binary'].map(t => (
+                <button key={t} onClick={() => setType(t)} style={{
+                  padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  background: type === t ? 'var(--accent)' : 'var(--surface)',
+                  border: `1px solid ${type === t ? 'var(--accent)' : 'var(--border)'}`,
+                  color: type === t ? '#fff' : 'var(--text2)', fontFamily: 'JetBrains Mono',
+                }}>{t === 'linear' ? 'Linear' : 'Binary'}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Scrollable body */}
+          <div className="sv-body">
+            {/* Cells */}
+            <div className="sv-cells">
+              {sh.arr.map((v, i) => {
+                const c = cellColor(i)
+                return (
+                  <div key={i} className="sv-cell" style={{ background: c.bg, borderColor: c.border, color: c.color }}>
+                    {v}
+                    <span className="sv-cell-idx">{i}</span>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Stats */}
+            <div className="sv-stats">
+              {[
+                ['Steps',  sh.steps],
+                ['Target', target || '—'],
+                ['Result', sh.found >= 0 ? `idx ${sh.found}` : sh.found === -2 ? 'Not found' : '—'],
+              ].map(([l, v]) => (
+                <div key={l} className="sv-stat">
+                  <div className="sv-stat-label">{l.toUpperCase()}</div>
+                  <div className="sv-stat-val">{v}</div>
                 </div>
-              )
-            })}
+              ))}
+            </div>
+
+            {/* Step log */}
+            <div className="sv-log">
+              <div style={{ fontSize: 9, color: 'var(--text2)', letterSpacing: '0.1em', marginBottom: 8, fontWeight: 700, fontFamily: 'JetBrains Mono' }}>STEP LOG</div>
+              {sh.log.length === 0
+                ? <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'JetBrains Mono' }}>Search start karo...</div>
+                : sh.log.map((l, i) => (
+                  <div key={i} style={{
+                    fontSize: 11, fontFamily: 'JetBrains Mono', lineHeight: 1.8,
+                    color: l.includes('FOUND') ? '#22d3a0' : l.includes('not found') ? '#f43f5e' : 'var(--text2)',
+                  }}>{l}</div>
+                ))
+              }
+            </div>
           </div>
 
-          {/* Stats */}
-          <div style={{ display: 'flex', gap: 8, marginTop: 24, marginBottom: 16 }}>
-            {[['Steps', sh.steps], ['Target', target || '—'], ['Result', sh.found >= 0 ? `idx ${sh.found}` : sh.found === -2 ? 'Not found' : '—']].map(([l, v]) => (
-              <div key={l} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 14px', flex: 1 }}>
-                <div style={{ fontSize: 9, color: 'var(--text2)', letterSpacing: '0.1em', marginBottom: 3 }}>{l.toUpperCase()}</div>
-                <div style={{ fontSize: 18, fontWeight: 800, fontFamily: 'JetBrains Mono' }}>{v}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Log */}
-          <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, padding: 12, maxHeight: 200, overflow: 'auto' }}>
-            <div style={{ fontSize: 9, color: 'var(--text2)', letterSpacing: '0.1em', marginBottom: 8, fontWeight: 700 }}>STEP LOG</div>
-            {sh.log.length === 0
-              ? <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'JetBrains Mono' }}>Search start karo...</div>
-              : sh.log.map((l, i) => <div key={i} style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: l.includes('FOUND') ? '#22d3a0' : l.includes('not found') ? '#f43f5e' : 'var(--text2)', lineHeight: 1.8 }}>{l}</div>)
-            }
+          {/* Controls */}
+          <div className="sv-controls">
+            <input
+              className="sv-target-input"
+              value={target}
+              onChange={e => setTarget(e.target.value)}
+              placeholder="Target number..."
+              type="number"
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            />
+            <Btn onClick={handleSearch} disabled={sh.running} primary>▶ Search</Btn>
+            <Btn onClick={() => sh.generate(type === 'binary')} green>⟳ New</Btn>
+            <div style={{ fontSize: 11, color: 'var(--text2)', display: 'flex', alignItems: 'center', gap: 5 }}>
+              Speed:
+              <input type="range" min={1} max={10} value={speed}
+                onChange={e => setSpeed(+e.target.value)}
+                style={{ accentColor: 'var(--accent)', width: 70 }} />
+            </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, padding: '12px 16px', borderTop: '1px solid var(--border)', flexWrap: 'wrap', alignItems: 'center' }}>
-          <input value={target} onChange={e => setTarget(e.target.value)} placeholder="Target number..."
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            style={{ background: 'var(--bg)', border: '1px solid var(--border2 )', borderRadius: 6, padding: '7px 10px', color: 'var(--text)', fontFamily: 'JetBrains Mono', fontSize: 12, width: 140, outline: 'none' }} />
-          <Btn onClick={handleSearch} disabled={sh.running} primary>▶ Search</Btn>
-          <Btn onClick={() => sh.generate(type === 'binary')} green>⟳ New</Btn>
-          <div style={{ fontSize: 11, color: 'var(--text2)', display: 'flex', alignItems: 'center', gap: 5 }}>
-            Speed: <input type="range" min={1} max={10} value={speed} onChange={e => setSpeed(+e.target.value)} style={{ accentColor: 'var(--accent)', width: 70 }} />
-          </div>
+        {/* ── Info panels ── */}
+        <div className="sv-info">
+          <InfoPanel title="How It Works" content={type === 'linear'
+            ? 'Har element ko left se right check karta hai jab tak target mile ya array khatam ho.'
+            : 'Sorted array mein middle check karta hai. Target chota → left half, bada → right half. Repeat.'} />
+          <CxPanel rows={type === 'linear'
+            ? [['Best', 'O(1)', '#22d3a0'], ['Worst', 'O(n)', '#f43f5e'], ['Space', 'O(1)', '#38bdf8']]
+            : [['Best', 'O(1)', '#22d3a0'], ['Worst', 'O(log n)', '#f59e0b'], ['Space', 'O(1)', '#38bdf8'], ['Req.', 'Sorted array', 'var(--text)']]} />
+          <InfoPanel title="Tip 💡" content={type === 'linear'
+            ? 'Linear search unsorted arrays pe kaam karta hai lekin slow hai large data ke liye.'
+            : 'Binary search sirf sorted arrays pe kaam karta hai — 1M elements mein sirf 20 steps!'} />
         </div>
       </div>
-
-      {/* Right info */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <InfoPanel title="How It Works" content={type === 'linear'
-          ? 'Har element ko left se right check karta hai jab tak target mile ya array khatam ho.'
-          : 'Sorted array mein middle check karta hai. Target chota → left half, bada → right half. Repeat.'} />
-        <CxPanel rows={type === 'linear'
-          ? [['Best', 'O(1)', '#22d3a0'], ['Worst', 'O(n)', '#f43f5e'], ['Space', 'O(1)', '#38bdf8']]
-          : [['Best', 'O(1)', '#22d3a0'], ['Worst', 'O(log n)', '#f59e0b'], ['Space', 'O(1)', '#38bdf8'], ['Req.', 'Sorted array', 'var(--text)']]} />
-        <InfoPanel title="Tip 💡" content={type === 'linear'
-          ? 'Linear search unsorted arrays pe kaam karta hai lekin slow hai large data ke liye.'
-          : 'Binary search sirf sorted arrays pe kaam karta hai — 1M elements mein sirf 20 steps!'} />
-      </div>
-    </div>
-  )
-}
-
-// Shared mini components
-const panel = { background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 12, display: 'flex', flexDirection: 'column', overflow: 'hidden' }
-
-function PanelHead({ title, children }) {
-  return (
-    <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-      <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text2)', letterSpacing: '0.06em' }}>{title.toUpperCase()}</span>
-      {children}
-    </div>
+    </>
   )
 }
 
@@ -126,8 +267,9 @@ function Btn({ children, onClick, disabled, primary, green }) {
       color: primary ? '#fff' : green ? '#22d3a0' : 'var(--text2)',
       border: `1px solid ${primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.3)' : 'var(--border)'}`,
       borderRadius: 7, padding: '7px 14px', fontSize: 12, fontWeight: 700,
+      height: 36, boxSizing: 'border-box',
       cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
-      fontFamily: 'JetBrains Mono'
+      fontFamily: 'JetBrains Mono',
     }}>{children}</button>
   )
 }

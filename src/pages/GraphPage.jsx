@@ -21,6 +21,23 @@ const ADJ = {}
 NODES.forEach(n => { ADJ[n.id] = [] })
 EDGES.forEach(([a, b]) => { ADJ[a].push(b); ADJ[b].push(a) })
 
+const gpStyles = [
+  '.gp-page { display:flex; flex-direction:column; gap:12px; overflow-y:auto; height:100%; }',
+  '.gp-svg-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; flex-shrink:0; }',
+  '.gp-svg-wrap { height:340px; flex-shrink:0; }',
+  '.gp-svg-wrap svg { width:100%; height:100%; }',
+  '.gp-btns { display:flex; gap:8px; padding:10px 14px; border-top:1px solid var(--border); align-items:center; flex-wrap:wrap; flex-shrink:0; }',
+  '.gp-info { display:grid; grid-template-columns:1fr 1fr; gap:10px; }',
+  '.gp-info-full { grid-column:1/-1; }',
+  '@media (min-width:768px) {',
+  '  .gp-page { flex-direction:row; overflow:hidden; }',
+  '  .gp-svg-card { flex:1; min-width:0; }',
+  '  .gp-svg-wrap { height:unset; flex:1; }',
+  '  .gp-info { width:260px; flex-shrink:0; display:flex; flex-direction:column; overflow-y:auto; }',
+  '  .gp-info-full { grid-column:unset; }',
+  '}',
+].join('\n')
+
 export default function GraphPage() {
   const [visited,    setVisited]    = useState(new Set())
   const [current,    setCurrent]    = useState(-1)
@@ -72,7 +89,7 @@ export default function GraphPage() {
       setCurrent(-1); setRunning(false); setQueueList([])
       addHistory({
         type: type === 'bfs' ? 'Graph BFS' : 'Graph DFS',
-        meta: { algorithm: type.toUpperCase(), visitOrder: ord.join(' → '), nodes: NODES.length, edges: EDGES.length },
+        meta: { algorithm: type.toUpperCase(), visitOrder: ord.join(' -> '), nodes: NODES.length, edges: EDGES.length },
       })
     }
   }, [speed])
@@ -83,22 +100,7 @@ export default function GraphPage() {
 
   return (
     <>
-      <style>{`
-        .gp-page { display:flex; flex-direction:column; gap:12px; overflow-y:auto; height:100%; }
-        .gp-svg-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; flex-shrink:0; }
-        .gp-svg-wrap { height:340px; flex-shrink:0; }
-        .gp-svg-wrap svg { width:100%; height:100%; }
-        .gp-btns { display:flex; gap:8px; padding:10px 14px; border-top:1px solid var(--border); align-items:center; flex-wrap:wrap; flex-shrink:0; }
-        .gp-info { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .gp-info-full { grid-column:1/-1; }
-        @media (min-width:768px) {
-          .gp-page { flex-direction:row; overflow:hidden; }
-          .gp-svg-card { flex:1; min-width:0; }
-          .gp-svg-wrap { height:unset; flex:1; }
-          .gp-info { width:260px; flex-shrink:0; display:flex; flex-direction:column; overflow-y:auto; }
-          .gp-info-full { grid-column:unset; }
-        }
-      `}</style>
+      <style>{gpStyles}</style>
 
       <div className="gp-page">
         <div className="gp-svg-card">
@@ -133,9 +135,9 @@ export default function GraphPage() {
             </svg>
           </div>
           <div className="gp-btns">
-            <Btn onClick={() => traverse('bfs')} disabled={running} primary>▶ Run BFS</Btn>
-            <Btn onClick={() => traverse('dfs')} disabled={running} green>▶ Run DFS</Btn>
-            <Btn onClick={reset}>⟳ Reset</Btn>
+            <Btn onClick={() => traverse('bfs')} disabled={running} primary>Run BFS</Btn>
+            <Btn onClick={() => traverse('dfs')} disabled={running} green>Run DFS</Btn>
+            <Btn onClick={reset}>Reset</Btn>
             <div style={{ fontSize:11, color:'var(--text2)', display:'flex', alignItems:'center', gap:5 }}>
               Speed:
               <input type="range" min={1} max={10} value={speed} onChange={e => setSpeed(+e.target.value)} style={{ accentColor:'var(--accent)', width:70 }} />
@@ -147,12 +149,12 @@ export default function GraphPage() {
         <div className="gp-info">
           <InfoBox title={activeAlgo === 'dfs' ? 'DFS Stack' : 'BFS Queue'} color="#f59e0b">
             <div style={{ fontFamily:'JetBrains Mono', fontSize:12, color:'#f59e0b' }}>
-              {queueList.length > 0 ? `[ ${queueList.join(' → ')} ]` : 'Empty'}
+              {queueList.length > 0 ? '[ ' + queueList.join(' -> ') + ' ]' : 'Empty'}
             </div>
           </InfoBox>
           <InfoBox title="Visit Order" color="#22d3a0">
             <div style={{ fontFamily:'JetBrains Mono', fontSize:12, color:'#22d3a0', lineHeight:2 }}>
-              {order.length > 0 ? order.join(' → ') : 'Not started yet'}
+              {order.length > 0 ? order.join(' -> ') : 'Not started yet'}
             </div>
           </InfoBox>
           <div className="gp-info-full" style={{ background:'var(--bg2)', border:'1px solid var(--border)', borderRadius:10, padding:14 }}>
@@ -184,7 +186,7 @@ function Btn({ children, onClick, disabled, primary, green }) {
     <button onClick={onClick} disabled={disabled} style={{
       background: primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.15)' : 'var(--surface)',
       color: primary ? '#fff' : green ? '#22d3a0' : 'var(--text2)',
-      border: `1px solid ${primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.3)' : 'var(--border)'}`,
+      border: '1px solid ' + (primary ? '#6c63ff' : green ? 'rgba(34,211,160,0.3)' : 'var(--border)'),
       borderRadius:7, padding:'7px 14px', fontSize:12, fontWeight:700,
       cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
       fontFamily:'JetBrains Mono',
