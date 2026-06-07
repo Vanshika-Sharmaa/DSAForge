@@ -18,7 +18,7 @@ export default function SearchVisualizer() {
 
   const handleSearch = () => {
     const t = parseInt(target)
-    if (isNaN(t)) return alert('Number daalo!')
+    if (isNaN(t)) return alert('Enter Number!')
     if (type === 'linear') sh.runLinear(t, speed)
     else sh.runBinary(t, speed)
   }
@@ -211,7 +211,7 @@ export default function SearchVisualizer() {
             <div className="sv-log">
               <div style={{ fontSize: 9, color: 'var(--text2)', letterSpacing: '0.1em', marginBottom: 8, fontWeight: 700, fontFamily: 'JetBrains Mono' }}>STEP LOG</div>
               {sh.log.length === 0
-                ? <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'JetBrains Mono' }}>Search start karo...</div>
+                ? <div style={{ fontSize: 11, color: 'var(--text3)', fontFamily: 'JetBrains Mono' }}>Start searching...</div>
                 : sh.log.map((l, i) => (
                   <div key={i} style={{
                     fontSize: 11, fontFamily: 'JetBrains Mono', lineHeight: 1.8,
@@ -246,14 +246,14 @@ export default function SearchVisualizer() {
         {/* ── Info panels ── */}
         <div className="sv-info">
           <InfoPanel title="How It Works" content={type === 'linear'
-            ? 'Har element ko left se right check karta hai jab tak target mile ya array khatam ho.'
-            : 'Sorted array mein middle check karta hai. Target chota → left half, bada → right half. Repeat.'} />
+    ? 'Checks each element from left to right until the target is found or the array ends.'
+    : 'Checks the middle of a sorted array. Target smaller → left half, larger → right half. Repeat.'} />
           <CxPanel rows={type === 'linear'
             ? [['Best', 'O(1)', '#22d3a0'], ['Worst', 'O(n)', '#f43f5e'], ['Space', 'O(1)', '#38bdf8']]
             : [['Best', 'O(1)', '#22d3a0'], ['Worst', 'O(log n)', '#f59e0b'], ['Space', 'O(1)', '#38bdf8'], ['Req.', 'Sorted array', 'var(--text)']]} />
           <InfoPanel title="Tip 💡" content={type === 'linear'
-            ? 'Linear search unsorted arrays pe kaam karta hai lekin slow hai large data ke liye.'
-            : 'Binary search sirf sorted arrays pe kaam karta hai — 1M elements mein sirf 20 steps!'} />
+    ? 'Linear search works on unsorted arrays but is slow for large data.'
+    : 'Binary search only works on sorted arrays — finds in just 20 steps among 1M elements!'} />
         </div>
       </div>
     </>
